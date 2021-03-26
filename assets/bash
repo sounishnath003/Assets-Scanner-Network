@@ -1,1 +1,7 @@
-wmic /output:C:\Users\SOUNISH\Desktop\a.txt product get name, version
+1. wmic /output:C:\Users\SOUNISH\Desktop\a.txt product get name, version
+
+2. Get-WmiObject Win32_Product -ComputerName 192.168.0.3 | select Name,Version, IdentifyingNumber >> a.txt
+
+4. wmic /node:192.168.0.3 product get name, version, InstallDate, Vendor, IdentifyingNumber
+
+5. wmic /node:192.168.0.3 product get name, version, InstallDate, Vendor, IdentifyingNumber >> details.txt
