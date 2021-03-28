@@ -10,9 +10,9 @@ import "encoding/json"
 
 type MetaDataInterface []MetaDataInterfaceElement
 
-func UnmarshalMetaDataInterface(data []byte) (MetaDataInterface, error) {
+func UnmarshalMetaDataInterface(data *[]byte) (MetaDataInterface, error) {
 	var r MetaDataInterface
-	err := json.Unmarshal(data, &r)
+	err := json.Unmarshal(*data, &r)
 	return r, err
 }
 

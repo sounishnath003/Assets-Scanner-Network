@@ -32,7 +32,7 @@ func Junker(ip string, wg *sync.WaitGroup) {
 			fmt.Println("device with IP:", ip, "is not neccesary to store data... skipping device...")
 		} else {
 			wg.Add(1)
-			go parseData(ip, out, wg)
+			go parseData(ip, &out, wg)
 		}
 	}
 
@@ -40,13 +40,13 @@ func Junker(ip string, wg *sync.WaitGroup) {
 	dd, _ := json.Marshal(payload)
 	file.Write([]byte(dd))
 
-	fmt.Println("payload and detected softwares are stored in payload.json file....")
+	fmt.Println("### host IP:", ip, " payload and detected softwares are stored in payload.json file....")
 }
 
-func parseData(ip string, out []byte, wg *sync.WaitGroup) {
+func parseData(ip string, out *[]byte, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	m, _ := model.UnmarshalMetaDataInterface(out) // []bytes to JsonStructObject
+	m, _ := model.UnmarshalMetaDataInterface(out)              // []bytes to JsonStructObject
 	d := RemoteDataStruct{IP: ip, InstalledSoftwareRecords: m} // actual payload formatting
 	// saving in state [...payload]
 	payload = append(payload, d)
