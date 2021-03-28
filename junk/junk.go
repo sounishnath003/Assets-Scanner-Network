@@ -39,13 +39,15 @@ func Junker(ip string, wg *sync.WaitGroup) {
 	file, _ := os.Create("payload.json")
 	dd, _ := json.Marshal(payload)
 	file.Write([]byte(dd))
+
+	fmt.Println("payload and detected softwares are stored in payload.json file....")
 }
 
 func parseData(ip string, out []byte, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	m, _ := model.UnmarshalMetaDataInterface(out)
-	d := RemoteDataStruct{IP: ip, InstalledSoftwareRecords: m}
-
+	m, _ := model.UnmarshalMetaDataInterface(out) // []bytes to JsonStructObject
+	d := RemoteDataStruct{IP: ip, InstalledSoftwareRecords: m} // actual payload formatting
+	// saving in state [...payload]
 	payload = append(payload, d)
 }

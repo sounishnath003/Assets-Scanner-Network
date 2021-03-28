@@ -8,6 +8,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/sounishnath003/network-scanner/junk"
 )
 
 var activeIp []string
@@ -62,4 +64,23 @@ func Fn3(ip string, wg *sync.WaitGroup) (string, error) {
 	fmt.Println("running on ip:", ip, "succeed...")
 	return ip, nil
 
+}
+
+func IpParser(ip string, wg *sync.WaitGroup, activeIps *[]string) {
+	var activeIp string
+	var err error
+
+	wg.Add(1)
+	defer wg.Done()
+
+	go func() {
+		activeIp, err = Fn3(ip, wg)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			*activeIps = append(*activeIps, activeIp)
+			wg.Add(1)
+			go junk.Junker(activeIp, wg)
+		}
+	}()
 }
