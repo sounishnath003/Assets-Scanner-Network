@@ -36,10 +36,11 @@ func Junker(ip string, wg *sync.WaitGroup) {
 		}
 	}
 
-	file, _ := os.Create("payload.json")
-	dd, _ := json.Marshal(payload)
+	file, er := os.Create("payload.json")
+	warn(er)
+	dd, err := json.Marshal(payload)
+	warn(err)
 	file.Write([]byte(dd))
-
 	fmt.Println("### host IP:", ip, " payload and detected softwares are stored in payload.json file....")
 }
 
@@ -50,4 +51,10 @@ func parseData(ip string, out *[]byte, wg *sync.WaitGroup) {
 	d := RemoteDataStruct{IP: ip, InstalledSoftwareRecords: m} // actual payload formatting
 	// saving in state [...payload]
 	payload = append(payload, d)
+}
+
+func warn(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
