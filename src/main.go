@@ -21,7 +21,7 @@ func main() {
 		wg.Add(1)
 		ip := host + strconv.Itoa(i)
 
-		go fn0(ip)
+		go fn1(ip)
 
 	}
 
@@ -50,11 +50,16 @@ func fn0(ip string) {
 }
 
 func fn1(ip string) {
+
+	defer wg.Done()
+
 	conn, err := net.DialTimeout("tcp", ip+":80", time.Second)
 
 	if err != nil {
-		fmt.Println(ip + " host is unreachable...")
+		fmt.Println("BAD HOST: " + ip + " host is unreachable...")
 	} else {
-		activeIp = append(activeIp, conn.LocalAddr().String())
+		defer conn.Close()
+		activeIp = append(activeIp, ip)
+		fmt.Println("running on ip:", ip, "succeed...")
 	}
 }
