@@ -1,6 +1,7 @@
 package junk
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -10,8 +11,8 @@ import (
 )
 
 type RemoteDataStruct struct {
-	IP                string                    `json:"ip"`
-	InstalledSoftware []model.MetaDataInterface `json:"installedSoftwareDetails"`
+	IP                       string      `json:"ip"`
+	InstalledSoftwareRecords interface{} `json:"installedSoftwareRecords"`
 }
 
 var payload []RemoteDataStruct
@@ -31,15 +32,20 @@ func Junker(ip string, wg *sync.WaitGroup) {
 			fmt.Println("device with IP:", ip, "is not neccesary to store data... skipping device...")
 		} else {
 			wg.Add(1)
-			go parseData(out, wg)
+			go parseData(ip, out, wg)
 		}
 	}
+
+	file, _ := os.Create("payload.json")
+	dd, _ := json.Marshal(payload)
+	file.Write([]byte(dd))
 }
 
-func parseData(out []byte, wg *sync.WaitGroup) {
+func parseData(ip string, out []byte, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	file, _ := os.Create("192.168.0.3.json")
-	file.Write(out)
+	m, _ := model.UnmarshalMetaDataInterface(out)
+	d := RemoteDataStruct{IP: ip, InstalledSoftwareRecords: m}
 
+	payload = append(payload, d)
 }

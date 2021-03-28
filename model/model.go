@@ -1,8 +1,26 @@
+// This file was generated from JSON Schema using quicktype, do not modify it directly.
+// To parse and unparse this JSON data, add this code to your project and do:
+//
+//    metaDataInterface, err := UnmarshalMetaDataInterface(bytes)
+//    bytes, err = metaDataInterface.Marshal()
+
 package model
 
 import "encoding/json"
 
-type MetaDataInterface struct {
+type MetaDataInterface []MetaDataInterfaceElement
+
+func UnmarshalMetaDataInterface(data []byte) (MetaDataInterface, error) {
+	var r MetaDataInterface
+	err := json.Unmarshal(data, &r)
+	return r, err
+}
+
+func (r *MetaDataInterface) Marshal() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+type MetaDataInterfaceElement struct {
 	Name              string      `json:"name"`
 	Vendor            string      `json:"vendor"`
 	Version           string      `json:"version"`
@@ -16,14 +34,4 @@ type MetaDataInterface struct {
 	InstallSource     string      `json:"InstallSource"`
 	PackageCode       string      `json:"PackageCode"`
 	WarrantyStateDate interface{} `json:"WarrantyStateDate"`
-}
-
-func UnmarshalMetaDataInterface(data []byte) (MetaDataInterface, error) {
-	var r MetaDataInterface
-	err := json.Unmarshal(data, &r)
-	return r, err
-}
-
-func (r *MetaDataInterface) Marshal() ([]byte, error) {
-	return json.Marshal(r)
 }
