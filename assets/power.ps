@@ -1,0 +1,42 @@
+$r = 1..255
+
+function Test-Ping {
+  param
+  (
+    # Computername or IP address to ping
+    [Parameter(Mandatory,ValueFromPipeline)]
+    [string[]]
+    $ComputerName,
+    
+    # Timeout in milliseconds
+    [int]
+    [ValidateRange(100,50000)]
+    $Timeout = 2000
+  )
+  
+  begin
+  {
+    $Online = @{
+      Name = 'Online'
+      Expression = { $_.Status -eq 'Success' }
+    }
+    $obj = New-Object System.Net.NetworkInformation.Ping
+  }
+  
+  process
+  {
+    $ComputerName | 
+    ForEach-Object {
+      $obj.Send($_, $timeout) |
+      Select-Object -Property $Online, Status, Address
+      | Add-Member -MemberType NoteProperty -Name Name -Value $_ -PassThru
+    }
+  }
+}
+
+foreach($i in $r){ 
+	$ip = "192.168.0." + $i
+	# $temp = Test-Ping -ComputerName $ip -Timeout 2000
+	# $temp
+    # Get-WmiObject -Class Win32_Product -ComputerName $ip | select name, vendor
+}
