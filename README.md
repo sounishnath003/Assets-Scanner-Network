@@ -1,7 +1,9 @@
 #  IT Network Asset Mgmt Script
 An Advanced and versatile tool who scans through your network, and find devices and gives an extensive information about that.
-
 At the initial stage I am focusing upon a CLI based application tool, later will think to build GUI.
+
+## What Is Remote Procedure Call?
+In distributed computing, a remote procedure call is when a computer program causes a procedure to execute in a different address space, which is coded as if it were a normal procedure call, without the programmer explicitly coding the details for the remote interaction. (source: WikiPedia)
 
 ![GOLANG](https://miro.medium.com/max/3152/1*Ifpd_HtDiK9u6h68SZgNuA.png)
 
