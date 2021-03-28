@@ -20,7 +20,7 @@ func main() {
 
 	host := "192.168.0."
 
-	for i := 1; i < 255; i++ {
+	for i := 1; i < 10; i++ {
 		wg.Add(1)
 		ip := host + strconv.Itoa(i)
 
@@ -36,7 +36,6 @@ func main() {
 				go junk.Junker(activeIp, &wg)
 			}
 		}()
-
 	}
 
 	fmt.Println("Workers: Waiting for workers to finish...")
