@@ -24,9 +24,9 @@ func main() {
 
 	for _, ip := range ips {
 		wg.Add(1)
-		mutex.RLock()
+		mutex.Lock()
 		go worker.IpParser(ip, &wg, &activeIps, &mutex)
-		mutex.RUnlock()
+		mutex.Unlock()
 	}
 
 	fmt.Println("Workers: Waiting for workers to pull it up...")
