@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"sync"
+	"time"
 
 	"github.com/sounishnath003/network-scanner/model"
 )
@@ -49,15 +50,18 @@ func fn0(ip string) {
 
 // writes collected payload to File
 func WritePayloadToFile() {
+	date := time.Now().Format("01-Jan-2020-15-04-15")
+	fileName := "collected-" + date + ".json"
+
 	dd, err := json.Marshal(payload)
 	warn(err)
-	f, err := os.OpenFile("payload.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	f, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	warn(err)
 	defer f.Close()
 	_, err = f.Write(dd)
 	warn(err)
 
-	fmt.Println("[SUCCEED]: collected data and payload has been written to the Payload.json file...")
+	fmt.Println("[SUCCEED]: collected data and payload has been written to the", fileName, "file...")
 }
 
 func parseData(ip string, out *[]byte, wg *sync.WaitGroup) {
