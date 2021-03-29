@@ -7,6 +7,15 @@ package model
 
 import "encoding/json"
 
+// * RemotePayload Struct Collection as Payload
+type RemoteDataStruct struct {
+	IP                       string      `json:"ip"`
+	DeviceInformation        interface{} `json:"deviceInformation"`
+	InstalledSoftwareRecords interface{} `json:"installedSoftwareRecords"`
+}
+
+// * Installed Software Struct
+
 type MetaDataInterface []MetaDataInterfaceElement
 
 func UnmarshalMetaDataInterface(data *[]byte) (MetaDataInterface, error) {

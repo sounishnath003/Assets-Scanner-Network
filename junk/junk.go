@@ -11,13 +11,7 @@ import (
 	"github.com/sounishnath003/network-scanner/model"
 )
 
-type RemoteDataStruct struct {
-	IP                       string      `json:"ip"`
-	DeviceInformation        interface{} `json:"deviceInformation"`
-	InstalledSoftwareRecords interface{} `json:"installedSoftwareRecords"`
-}
-
-var payload []RemoteDataStruct
+var payload []model.RemoteDataStruct
 
 func Junker(ip string, wg *sync.WaitGroup, mutex *sync.RWMutex) {
 
@@ -73,9 +67,10 @@ func WritePayloadToFile() {
 func parseData(ip string, out1, out2 *[]byte, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	n, _ := model.UnmarshalDeviceInfoInterface(out1)
-	m, _ := model.UnmarshalMetaDataInterface(out2)                                   // []bytes to JsonStructObject
-	d := RemoteDataStruct{IP: ip, DeviceInformation: n, InstalledSoftwareRecords: m} // actual payload formatting
+	// []bytes to JsonStructObject
+	n, _ := model.UnmarshalDeviceInfoInterface(out1)                                       // for Deviceinfo
+	m, _ := model.UnmarshalMetaDataInterface(out2)                                         // for InstalledSoftware Info
+	d := model.RemoteDataStruct{IP: ip, DeviceInformation: n, InstalledSoftwareRecords: m} // actual payload formatting
 	// saving in state [...payload]
 	payload = append(payload, d)
 }
