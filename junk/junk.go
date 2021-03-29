@@ -17,9 +17,10 @@ type RemoteDataStruct struct {
 
 var payload []RemoteDataStruct
 
-func Junker(ip string, wg *sync.WaitGroup) {
+func Junker(ip string, wg *sync.WaitGroup, mutex *sync.RWMutex) {
 
 	defer wg.Done()
+	defer mutex.Unlock()
 
 	excmd := "Get-WmiObject -Class Win32_Product -ComputerName " + ip
 
@@ -35,13 +36,28 @@ func Junker(ip string, wg *sync.WaitGroup) {
 			go parseData(ip, &out, wg)
 		}
 	}
+}
 
+func fn0(ip string) {
 	file, er := os.Create("payload.json")
 	warn(er)
 	dd, err := json.Marshal(payload)
 	warn(err)
 	file.Write([]byte(dd))
 	fmt.Println("### host IP:", ip, " payload and detected softwares are stored in payload.json file....")
+}
+
+// writes collected payload to File
+func WritePayloadToFile() {
+	dd, err := json.Marshal(payload)
+	warn(err)
+	f, err := os.OpenFile("payload.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	warn(err)
+	defer f.Close()
+	_, err = f.Write(dd)
+	warn(err)
+
+	fmt.Println("[SUCCEED]: collected data and payload has been written to the Payload.json file...")
 }
 
 func parseData(ip string, out *[]byte, wg *sync.WaitGroup) {

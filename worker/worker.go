@@ -66,7 +66,7 @@ func Fn3(ip string, wg *sync.WaitGroup) (string, error) {
 
 }
 
-func IpParser(ip string, wg *sync.WaitGroup, activeIps *[]string) {
+func IpParser(ip string, wg *sync.WaitGroup, activeIps *[]string, mutex *sync.RWMutex) {
 	var activeIp string
 	var err error
 
@@ -80,7 +80,8 @@ func IpParser(ip string, wg *sync.WaitGroup, activeIps *[]string) {
 		} else {
 			*activeIps = append(*activeIps, activeIp)
 			wg.Add(1)
-			go junk.Junker(activeIp, wg)
+			mutex.Lock()
+			go junk.Junker(activeIp, wg, mutex)
 		}
 	}()
 }
