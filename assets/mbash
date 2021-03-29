@@ -13,3 +13,8 @@
 --- FINAL
 -----------
 A. Get-WmiObject -Class Win32_Product -ComputerName 192.168.0.3 | select name, vendor, version, InstallDate, caption, IdentifyingNumber, PackageName, ProductID, WarrantyDuration, Description, InstallSource, PackageCode, WarrantyStateDate | ConvertTo-Json -depth 100 | out-file out.json
+
+B. get-computerinfo | select WindowsProductId, WindowsProductName, WindowsRegisteredOwner, WindowsVersion, BiosBIOSVersion, BiosManufacturer, BiosSeralNumber, CsDNSHostName, CsProcessors, TimeZone | convertTo-json -depth 100
+
+
+C. Invoke-command -ComputerName 192.168.0.3 -ScriptBlock { get-computerinfo | select WindowsProductId, WindowsProductName, WindowsRegisteredOwner, WindowsVersion, BiosBIOSVersion, BiosManufacturer, BiosSeralNumber, CsDNSHostName, CsProcessors, TimeZone | convertTo-json -depth 100 }

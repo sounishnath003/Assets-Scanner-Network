@@ -1,6 +1,42 @@
 [
   {
     "ip": "192.168.0.2",
+    "deviceInformation": {
+      "WindowsProductId": "00330-80000-00000-AA116",
+      "WindowsProductName": "Windows 10 Pro",
+      "WindowsRegisteredOwner": "SOUNISH",
+      "WindowsVersion": "2009",
+      "BiosBIOSVersion": [
+        "DELL   - 1072009",
+        "A11",
+        "American Megatrends - 5000A"
+      ],
+      "BiosManufacturer": "Dell Inc.",
+      "BiosSeralNumber": "CGKJF32",
+      "CsDNSHostName": "DESKTOP-11HJERV",
+      "CsProcessors": [
+        {
+          "Name": "Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz",
+          "Manufacturer": "GenuineIntel",
+          "Description": "Intel64 Family 6 Model 61 Stepping 4",
+          "Architecture": 9,
+          "AddressWidth": 64,
+          "DataWidth": 64,
+          "MaxClockSpeed": 2201,
+          "CurrentClockSpeed": 2201,
+          "NumberOfCores": 2,
+          "NumberOfLogicalProcessors": 4,
+          "ProcessorID": "BFEBFBFF000306D4",
+          "SocketDesignation": "SOCKET 0",
+          "ProcessorType": 3,
+          "Role": "CPU",
+          "Status": "OK",
+          "CpuStatus": 1,
+          "Availability": 3
+        }
+      ],
+      "TimeZone": "(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi"
+    },
     "installedSoftwareRecords": [
       {
         "name": "Python 3.9.2 Add to Path (64-bit)",

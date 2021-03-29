@@ -13,6 +13,7 @@ import (
 
 type RemoteDataStruct struct {
 	IP                       string      `json:"ip"`
+	DeviceInformation        interface{} `json:"deviceInformation"`
 	InstalledSoftwareRecords interface{} `json:"installedSoftwareRecords"`
 }
 
@@ -23,18 +24,23 @@ func Junker(ip string, wg *sync.WaitGroup, mutex *sync.RWMutex) {
 	defer wg.Done()
 	defer mutex.Unlock()
 
+	// commands to be executed on remote machines RPC server communications
+	exec1 := "get-computerinfo | select WindowsProductId, WindowsProductName, WindowsRegisteredOwner, WindowsVersion, BiosBIOSVersion, BiosManufacturer, BiosSeralNumber, CsDNSHostName, CsProcessors, TimeZone | convertTo-json -depth 100"
 	excmd := "Get-WmiObject -Class Win32_Product -ComputerName " + ip
 
-	out, err := exec.Command("powershell", excmd, "|", "select name, vendor, version, InstallDate, caption, IdentifyingNumber, PackageName, ProductID, WarrantyDuration, Description, InstallSource, PackageCode, WarrantyStateDate", "|", "ConvertTo-Json -depth 100").Output()
+	out1, err := exec.Command("powershell", exec1).Output()
+	warn(err)
+
+	out2, err := exec.Command("powershell", excmd, "|", "select name, vendor, version, InstallDate, caption, IdentifyingNumber, PackageName, ProductID, WarrantyDuration, Description, InstallSource, PackageCode, WarrantyStateDate", "|", "ConvertTo-Json -depth 100").Output()
 
 	if err != nil {
 		fmt.Println("*** Executing and connecting with RemoteIP:", ip, "refusing to connect...")
 	} else {
-		if len(string(out[:])) < 1 {
+		if len(string(out2[:])) < 1 {
 			fmt.Println("device with IP:", ip, "is not neccesary to store data... skipping device...")
 		} else {
 			wg.Add(1)
-			go parseData(ip, &out, wg)
+			go parseData(ip, &out1, &out2, wg)
 		}
 	}
 }
@@ -64,17 +70,18 @@ func WritePayloadToFile() {
 	fmt.Println("[SUCCEED]: collected data and payload has been written to the", fileName, "file...")
 }
 
-func parseData(ip string, out *[]byte, wg *sync.WaitGroup) {
+func parseData(ip string, out1, out2 *[]byte, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	m, _ := model.UnmarshalMetaDataInterface(out)              // []bytes to JsonStructObject
-	d := RemoteDataStruct{IP: ip, InstalledSoftwareRecords: m} // actual payload formatting
+	n, _ := model.UnmarshalDeviceInfoInterface(out1)
+	m, _ := model.UnmarshalMetaDataInterface(out2)                                   // []bytes to JsonStructObject
+	d := RemoteDataStruct{IP: ip, DeviceInformation: n, InstalledSoftwareRecords: m} // actual payload formatting
 	// saving in state [...payload]
 	payload = append(payload, d)
 }
 
 func warn(err error) {
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
