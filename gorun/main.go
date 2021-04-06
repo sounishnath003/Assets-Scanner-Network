@@ -16,7 +16,7 @@ var mutex sync.RWMutex
 
 func main() {
 	runtime.GOMAXPROCS(100)
-	ips, err := host.Hosts("65.168.41.125") // CIDR
+	ips, err := host.Hosts("192.168.0.5/24") // CIDR
 
 	if err != nil {
 		panic(err)

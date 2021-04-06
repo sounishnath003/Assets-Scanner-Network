@@ -2,12 +2,6 @@
 An Advanced and versatile tool who scans through your network, and find devices and gives an extensive information about that.
 At the initial stage I am focusing upon a CLI based application tool, later will think to build GUI.
 
-## Structure
-| Codebase | Description |
-| --- | --- |
-| [gorun](https://github.com/sounishnath003/Assets-Scanner-Network-GO/tree/master/gorun) | Concurrent Golang script for asset scanning |
-| [javaist](https://github.com/sounishnath003/Assets-Scanner-Network-GO/tree/master/javaist)  | Currently developing Asset scanner using Java 11 |
-
 ## What Is Remote Procedure Call?
 In distributed computing, a remote procedure call is when a computer program causes a procedure to execute in a different address space, which is coded as if it were a normal procedure call, without the programmer explicitly coding the details for the remote interaction. (source: WikiPedia)
 
