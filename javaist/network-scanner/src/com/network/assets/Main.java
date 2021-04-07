@@ -15,7 +15,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class Main {
@@ -31,7 +33,7 @@ public class Main {
             return;
         }
 
-        for(int i=1; i < 255;i++) {
+        for(int i=1; i < 20;i++) {
             final int j = i;
             // new thread for parallel execution
             new Thread(() -> {
@@ -42,10 +44,7 @@ public class Main {
                     if (address.isReachable(5000)) {
                         System.out.println(output + " is on the network");
                         activeIps.add(output);
-
                         execCommands(output);
-
-
                     } else {
                         deactivedIps.add(output);
                         System.out.println("Not Reachable: "+output);
@@ -58,26 +57,48 @@ public class Main {
     }
 
     public synchronized static void execCommands(String ip) throws IOException {
-        System.out.println("Running for IP: " + ip);
-        String cmd = "ls";
-        try {
-            Runtime runner = Runtime.getRuntime();
-            Process pr = runner.exec(new String[]{"powershell", cmd});
+        String c1 = "Get-WmiObject -Class Win32_Product -ComputerName ";
+        String c2 = " | select name, vendor, version, InstallDate, caption, IdentifyingNumber, PackageName, ProductID, WarrantyDuration, Description, InstallSource, PackageCode, WarrantyStateDate | ConvertTo-Json -depth 100 | out-file " + ip + ".json" ;
+        String cmd = c1 + ip + c2;
+        System.out.println(cmd);
+        new Thread(() -> {
+            try {
+                Runtime runner = Runtime.getRuntime();
+                Process pr = runner.exec(new String[]{"powershell", cmd});
 
-            BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            pr.waitFor();
-            String out = "";
-            while ((out=buf.readLine())!=null) {
-                System.out.println(out);
+                BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                pr.waitFor();
+                String out = "";
+                while ((out=buf.readLine()) != null) {
+                    System.out.println(out);
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch (Exception e) {
-            e.printStackTrace();
+        }).start();
+    }
+
+    public static void getDetailsOfAllNetworkInterfaces() throws Exception {
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaces.nextElement();
+            // drop inactive
+            if (!networkInterface.isUp())
+                continue;
+
+            // smth we can explore
+            Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+            while(addresses.hasMoreElements()) {
+                InetAddress addr = addresses.nextElement();
+                System.out.println(String.format("NetInterface: name [%s], ip [%s]",
+                        networkInterface.getDisplayName(), addr.getHostAddress()));
+            }
         }
     }
 
     public static void main(String[] args) throws Exception {
+        getDetailsOfAllNetworkInterfaces();
         getNetworkIPsWithThreading();
-        activeIps.stream().forEach(System.out::println);
-        deactivedIps.stream().forEach(System.out::println);
     }
 }
