@@ -97,8 +97,23 @@ public class Main {
         }
     }
 
+    public static ArrayList<String> getAllHostsUsingCIDR(String ip) throws Exception{
+        ArrayList<String> allIps = new ArrayList<>();
+        String[] split = ip.split("/");
+        String networkAddress = split[0];
+        int maskLength = Integer.parseInt(split[1]);
+
+        System.out.println(networkAddress + " - " + maskLength);
+        return allIps;
+    }
+
     public static void main(String[] args) throws Exception {
-        getDetailsOfAllNetworkInterfaces();
-        getNetworkIPsWithThreading();
+//        getDetailsOfAllNetworkInterfaces();
+//        getNetworkIPsWithThreading();
+
+        CIDRUtils cidrUtils = new CIDRUtils("10.180.79.1/25");
+        System.out.println(cidrUtils.getNetworkAddress());
+        System.out.println(cidrUtils.getBroadcastAddress());
+
     }
 }
